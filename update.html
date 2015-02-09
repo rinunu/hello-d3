@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body class="lift:content_id=main">
+
+<div ng-app id="main" class="lift:surround?with=default&at=content">
+    <!--TODO-->
+    <script src="/lib/d3.v2.js"></script>
+
+    <h2>更新処理</h2>
+    http://bl.ocks.org/3808234
+
+    <style type="text/css">
+        text {
+            font: bold 48px monospace;
+        }
+
+        .enter {
+            fill: green;
+        }
+
+        .update {
+            fill: #333;
+        }
+
+        .exit {
+            fill: brown;
+        }
+    </style>
+
+    <p>
+
+    </p>
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="960" height="500">
+        <g>
+        </g>
+    </svg>
+
+    <script type="text/javascript">
+        (function () {
+            var svg = d3.select("svg g");
+            svg.attr("transform", "translate(32," + (500 / 2) + ")");
+
+            function update(chars) {
+                console.log("update", chars);
+                var text = svg.selectAll("text")
+                        .data(chars, function (c) {
+                            // 第2引数は、 key.
+                            // http://bost.ocks.org/mike/constancy/
+                            return c;
+                        });
+
+                // update
+                text.attr("class", "update")
+                        .transition()
+                        .duration(750)
+                        .attr("x", function (d, i) {
+                            return i * 32;
+                        });
+
+                // create new
+                text.enter().append("text")
+                        .attr("class", "enter")
+                        .attr("x", function (c, i) {
+                            return i * 32;
+                        })
+                        .attr("y", -60)
+                        .text(function (c) {
+                            return c;
+                        })
+                        .transition()
+                        .duration(750)
+                        .attr("y", 0);
+
+                // remove old
+                text.exit()
+                        .attr("class", "exit")
+                        .transition()
+                        .duration(750)
+                        .attr("y", 60)
+                        .remove();
+            }
+
+            var alphabet = "abcedfghijklmnopqrstuvwxyz".split("");
+            var width = 960,
+                    height = 500;
+
+            update(alphabet);
+
+            setInterval(function () {
+                update(shuffle(alphabet)
+                        .slice(0, Math.floor(Math.random() * 26))
+                        .sort());
+            }, 1000);
+
+            function shuffle(array) {
+                var m = array.length, t, i;
+                while (m) {
+                    i = Math.floor(Math.random() * m--);
+                    t = array[m];
+                    array[m] = array[i];
+                    array[i] = t;
+                }
+                return array;
+            }
+        })();
+    </script>
+
+
+</div>
+
+</body>
+</html>
+
+
